@@ -1,55 +1,70 @@
 import React,{useState} from 'react';
-import {Button, ButtonGroup,Grid, Paper} from '@material-ui/core';
+import {Button, Grid, Paper} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import { NavLink} from 'react-router-dom';
+import { withRouter } from 'react-router';
 
 const useStyles = makeStyles({
     paper:{
-        textAlign: 'left',
-        backgroundColor: '#fff',
+    position: 'absolute',
+    top: '20px',
+    left: '30%',
+    padding: '8px',
+    width: '490px',
+    //height: '592px',
+    backgroundColor: '#FFFFFF',
+    border: '1px solid #E0E0E0',
+    borderRadius: '4px',
+    opacity: '1',
     },
-    grid_item:{
-        backgroundColor: '#fff',
-        padding: '15px',
-        boxShadow:' 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
-    },
-    nav_link:{
-        textDecoration:'none',
-        display:'block',
-        padding: '15x',
-        height: '100%',
-    },
-    button:{
-        width: '100%',
-    },
-    btnBottom:{
-        borderBottom: '2px solid red',
-    }
+   button:{
+    width: '168px',
+    height: '34px',
+    letterSpacing: '0px',
+    color: '#808080',
+    border: '1px solid #d7d7d7',
+    textAlign: 'left',
+    opacity: '1'
+   },
+   buttonCss:{
+    marginLeft:'10px',
+    width:'168px',
+    height: '34px',
+    color:'#242424',
+    letterSpacing: '0px',
+    //backgroundColor : '#f2f2f2',
+    border: '1px solid #d7d7d7',
+    opacity: '1',
+   },
+   btnBorderBottom:{
+    borderBottom: '3px solid #f7a445',
+    backgroundColor : '#f2f2f2',
+   }
 });
 function CommanGrid(props) {
-    const [state, setState] = useState('');
     const classes = useStyles();
+    const [isActive, setisActive] = useState(false)
+   
+    const  getRoute = route =>{
+       let status = route==='conversation'?true:false;
+        setisActive(status);
+        props.history.push(`/${route}`);
+    
+    }
     return (
         <div>
             <Grid container >
-                <Grid item md = {12} className = {classes.grid_item}>
-                    <Paper className = {classes.paper}>
-                        <ButtonGroup style = {{width:'50%'}} >
+                <Grid item md = {12} >
+                    <Paper className = {classes.paper }>
                             <Button 
-                                 onClick = {()=>{setState('conversation');}}
-                                className = {`${classes.button} ${state==='conversation'?classes.btnBottom:''}`}  
-                                variant = {state==='conversation'?"contained":"outlined"}
-                            > 
-                                <NavLink to ="/conversation" className = {classes.nav_link}> Conversation</NavLink>
+                                 onClick = {()=>getRoute('conversation')}
+                                className = {`${classes.button} ${isActive===true?classes.btnBorderBottom:''}`}  
+                            >  Conversation
                             </Button>
                             <Button
-                                onClick = {()=>{setState('notes');}} 
-                                className = {`${classes.button} ${state==='notes'?classes.btnBottom:''}`}
-                                variant = {state==='notes'?"contained":"outlined"}> 
-                                <NavLink to ="/notes" className = {classes.nav_link}>Note</NavLink>
+                                onClick = {()=>getRoute('notes')} 
+                                className = {`${classes.buttonCss} ${isActive===false?classes.btnBorderBottom:''}`}
+                            > Notes
                             </Button>
-                        </ButtonGroup>
-                        
                         {props.children}
                     </Paper>
                 </Grid>
@@ -58,4 +73,4 @@ function CommanGrid(props) {
     )
 }
 
-export default CommanGrid;
+export default withRouter( CommanGrid);
