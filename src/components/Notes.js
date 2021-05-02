@@ -1,4 +1,5 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
+import instance from '../axios';
 import {Typography,
     Paper,
     Table,
@@ -8,6 +9,9 @@ import {Typography,
     TableContainer,
     Grid,Button, TextareaAutosize, TableHead, InputBase } from '@material-ui/core';
 import {makeStyles,createStyles,withStyles} from '@material-ui/core/styles';
+
+//import {connect} from 'react-redux'
+//import fetchUsers from '../flux/actions/user_actions';
 const useStyles = makeStyles({
     typograpgy:{
         width: '455px',
@@ -120,18 +124,53 @@ const CssButton = withStyles({
 })(Button);
 
 
-function Notes() {
+function Notes(props) {
     const classes = useStyles();
     const tableHead = ['Team','Reason','Status','Details'];
     const  initialNotes = [
-        {Team:'Team1',Reason:'Reason 1',Status:'open',Details:'Minim nisi duis aliqua aliquip nulla do magna ad nostrud excepteur ea dolor id.'},
-        {Team:'Team2',Reason:'Reason 2',Status:'close',Details:'Minim nisi duis aliqua aliquip nulla do magna ad nostrud excepteur ea dolor id.'},
-        {Team:'Team3',Reason:'Reason 3',Status:'pending',Details:'Minim nisi duis aliqua aliquip nulla do magna ad nostrud excepteur ea dolor id.'},
+        {   email:"",
+            first_name:"",
+            last_name:"",
+            avatar:""
+        }
     ];
     const [notes, setnotes] = useState(initialNotes);
     const [newNote, setnewNote] = useState('');
     const [searchKey, setsearchKey] = useState('');
-
+    useEffect(() => {
+        //props.fetchUsers();
+        instance.get('/users')
+        .then(res=>{console.log(res.data.data);
+        setnotes(res.data.data)})
+        
+        return () => {
+           // props.fetchUsers();
+        }
+    }, []);
+    const createUser = () =>{
+        const data = {
+            name: newNote,
+            job: newNote
+        }
+        instance.post('/users',data)
+        .then(res=>{
+           const createdNote = {
+              // ...initialNotes,
+               id:res.data.id,
+               email: res.data.name+'@gmail.com',
+               first_name:res.data.name,
+               last_name:res.data.name,
+               avatar:res.data.createdAt
+           }
+           setnotes([...notes,createdNote]);
+           console.log(notes);
+        })
+        .catch(err=>console.log(err))
+    }
+    const fillNote = (noteObj) =>{
+        //console.log(noteObj);
+        setnewNote(noteObj.email)
+    }
     return (
         <Paper className = {classes.paper}>
             <Typography className = {classes.typograpgy} >Lorem aliqua officia esse 
@@ -164,12 +203,12 @@ function Notes() {
                          { tableHead.map(heading=><TableCell className = {classes.thcell}  >{heading}</TableCell>)}  
                         </TableHead>
                         <TableBody className = {classes.tbody}>
-                        {notes.map((row) => (
-                            <StyledTableRow key={row.Team}>
-                                <TableCell className = {classes.tcell}>{row.Team}</TableCell>
-                                <TableCell className = {classes.tcell}>{row.Reason}</TableCell>
-                                <TableCell className = {classes.tcell}>{row.Status}</TableCell>
-                                <TableCell className = {classes.tcell}>{row.Details}</TableCell>
+                        {notes?.map((row) => (
+                            <StyledTableRow key={row.id+row.email} onClick = {()=>fillNote(row)}>
+                                <TableCell className = {classes.tcell}>{row.first_name}</TableCell>
+                                <TableCell className = {classes.tcell}>{row.last_name}</TableCell>
+                                <TableCell className = {classes.tcell}>{row.first_name + row.last_name}</TableCell>
+                                <TableCell className = {classes.tcell}>{row.avatar}</TableCell>
                             </StyledTableRow>
                         ))}
                         </TableBody>
@@ -187,14 +226,21 @@ function Notes() {
         </Grid> 
         <Grid style = {{textAlign:'right'}}>
             <Button className = {classes.clearButton} onClick = {()=>setnewNote('')}>Clear</Button>
-            <CssButton onClick = {()=>{
-                let newNoteObje = {Team:'Team3',Reason:'Reason 3',Status:'pending',Details:newNote}
-                setnotes([...notes,newNoteObje]);
-                setnewNote('');
-            }}>Submit</CssButton>
+            <CssButton onClick = {createUser}>Submit</CssButton>
         </Grid>  
         </Paper>
     )
 }
-
-export default Notes;
+// const mapStateToProps = (state) =>{
+//     return {
+//         users: state.users.users,
+//     }
+// }
+// const mapDispatchToProps = dispatch =>{
+//     return {
+//         fetchUsers: ()=>dispatch(fetchUsers()),
+//        // createNewNote: (nNote)=>dispatch(createNewNote(nNote)),
+//     }
+// }
+// export default  connect(mapStateToProps,mapDispatchToProps)(Notes);
+   export default  Notes;

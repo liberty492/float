@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     opacity: '1',
     },
    button:{
-    width: '168px',
+    width: '200px',
     height: '34px',
     letterSpacing: '0px',
     color: '#808080',
@@ -58,7 +58,7 @@ function CommanGrid(props) {
                             <Button 
                                  onClick = {()=>getRoute('conversation')}
                                 className = {`${classes.button} ${isActive===true?classes.btnBorderBottom:''}`}  
-                            >  Conversation
+                            >  Conversation Draft
                             </Button>
                             <Button
                                 onClick = {()=>getRoute('notes')} 
