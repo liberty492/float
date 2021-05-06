@@ -183,15 +183,15 @@ function Notes(props) {
                         }}/> 
                         <CssButton onClick = {
                                 ()=>{
-                                  let filterdNotes = notes.filter( (obj,index)=>
-                                        {
-                                            let str = obj.Status+obj.Reason+obj.Team+obj.Details;
-                                            console.log(str,searchKey);
-                                           if(str.toLowerCase().includes(searchKey.toLowerCase())){
-                                               return obj;
-                                           }
-                                        }).map(note=>{console.log("MAP",note);return note;});
-                                        setnotes(filterdNotes);
+                                //   let filterdNotes = notes.filter( (obj,index)=>
+                                //         {
+                                //             let str = obj.Status+obj.Reason+obj.Team+obj.Details;
+                                //             console.log(str,searchKey);
+                                //            if(str.toLowerCase().includes(searchKey.toLowerCase())){
+                                //                return obj;
+                                //            }
+                                //         }).map(note=>{console.log("MAP",note);return note;});
+                                        //setnotes(filterdNotes);
                                         setsearchKey('');
                                 }
                         }>Search</CssButton>
@@ -203,7 +203,14 @@ function Notes(props) {
                          { tableHead.map(heading=><TableCell className = {classes.thcell}  >{heading}</TableCell>)}  
                         </TableHead>
                         <TableBody className = {classes.tbody}>
-                        {notes?.map((row) => (
+                        {notes?.filter( (obj,index)=>
+                                        {
+                                            let str = obj.email+obj.first_name+obj.last_name+obj.avatar;
+                                            console.log(str,searchKey);
+                                           if(str.toLowerCase().includes(searchKey.toLowerCase())){
+                                               return obj;
+                                           }
+                                        }).map((row) => (
                             <StyledTableRow key={row.id+row.email} onClick = {()=>fillNote(row)}>
                                 <TableCell className = {classes.tcell}>{row.first_name}</TableCell>
                                 <TableCell className = {classes.tcell}>{row.last_name}</TableCell>
