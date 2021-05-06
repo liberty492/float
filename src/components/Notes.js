@@ -192,7 +192,7 @@ function Notes(props) {
                                 //            }
                                 //         }).map(note=>{console.log("MAP",note);return note;});
                                         //setnotes(filterdNotes);
-                                        setsearchKey('');
+                                        setsearchKey(searchKey);
                                 }
                         }>Search</CssButton>
                         <Button className = {classes.clearButton}>Clear</Button>
